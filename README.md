@@ -13,8 +13,8 @@ to support thermal tests on spacecraft equipment.
 
 ## How to use
     
-    $ tcsstamp -h
-    usage: tcsstamp [-h] [--version] [--verbose] --tcs TCS [--stamp STAMP] [--fractional_time] [--rate RATE]
+    $ tcs_stamp -h
+    usage: tcs_stamp [-h] [--version] [--verbose] --tcs TCS [--stamp STAMP] [--fractional_time] [--rate RATE]
     
     Convert TCS EGSE Telemetry to a STAMP EGSE interface format.
     
@@ -43,7 +43,7 @@ when the hostname and port are given as an argument, otherwise the data is sent 
 
 An example usage in a local network might look like this:
 
-    $ tcsstamp --tcs 10.33.178.10:6666 --stamp 10.33.178.12:4444
+    $ tcs_stamp --tcs 10.33.178.10:6666 --stamp 10.33.178.12:4444
 
 
 ## Glossary

@@ -24,7 +24,7 @@ def parse_arguments():
     """
 
     parser = argparse.ArgumentParser(
-        prog="tcsstamp",
+        prog="tcs_stamp",
         description="Convert TCS EGSE Telemetry to a STAMP EGSE interface format.",
         epilog="An endpoint shall be specified as 'hostname:port'.",
     )
