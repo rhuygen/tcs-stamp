@@ -22,7 +22,7 @@ def parse_arguments():
     """
 
     parser = argparse.ArgumentParser(
-        prog="tcs_stamp_converter",
+        prog="tcsstamp",
         description="Convert TCS EGSE Telemetry to a STAMP EGSE interface format.",
         epilog="An endpoint shall be specified as 'hostname:port'.",
     )
@@ -96,7 +96,9 @@ def main():
             tm_data = tcsstamp.process.process_telemetry(tm_data)
             verbose > 2 and print(f"{tm_data=}")
             verbose > 0 and print(
-                f"{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S.%f')[:-3]} nr of telemetry values = {len(tm_data)}")
+                f"{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S.%f')[:-3]} "
+                f"nr of telemetry values = {len(tm_data)}"
+            )
 
             # Write the converted data to the STAMP or stdout
 
@@ -105,7 +107,7 @@ def main():
                 if stamp:
                     stamp.write(bytes(line, 'utf-8'))
                 else:
-                    verbose > 1 and print(line, end='')
+                    print(line, end='')
         except KeyboardInterrupt:
             break
 
