@@ -3,12 +3,14 @@ import datetime
 import logging
 import operator
 import re
-from typing import List
+from typing import List, Dict
 
 logger = logging.getLogger()
 
+housekeeping = dict()
 
-def process_telemetry(data: str) -> List[List[str]]:
+
+def process_telemetry(data: str) -> Dict:
     """
     Process the housekeeping telemetry that was received from the TCS EGSE.
 
@@ -19,18 +21,23 @@ def process_telemetry(data: str) -> List[List[str]]:
         A nested list where the inner lists contain the name, timestamp and value of a housekeeping
         parameter.
     """
+    global housekeeping
+
     data = data.split('\x03')
     data = [x for x in data if x]
     if not data:
-        logger.warning("Format error: no housekeeping value received.")
-        return []
+        logger.warning("Format error: no new housekeeping values received.")
+        return housekeeping
     data = data[0].split('\r\n')
     data = [x.split('\t') for x in data]
-    data = sorted(data, key=operator.itemgetter(0))
 
-    data = [[convert_date(x[0]), x[1], extract_value(x[1], x[2])] for x in data]
+    for x in data:
+        date = convert_date(x[0])
+        name = x[1]
+        value = extract_value(x[1], x[2])
+        housekeeping[name] = [date, name, value]
 
-    return data
+    return housekeeping
 
 
 def convert_date(date: str):

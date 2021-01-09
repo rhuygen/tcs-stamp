@@ -8,7 +8,9 @@ a format that is understood by STAMP.
 
 import argparse
 import datetime
+import operator
 import sys
+import time
 
 import tcsstamp
 import tcsstamp.process
@@ -56,7 +58,7 @@ def parse_arguments():
     )
     parser.add_argument(
         "--rate", "-r",
-        type=int,
+        type=int, default=1,
         help="The outgoing telemetry rate to STAMP [seconds].",
     )
     parser.version = f"version {tcsstamp.__version__}"
@@ -76,6 +78,7 @@ def main():
 
     tcsstamp.process.time_fraction = args.fractional_time
     verbose = args.verbose
+    rate = args.rate
 
     if args.stamp:
         stamp_hostname, stamp_port = args.stamp.split(':')
@@ -87,6 +90,8 @@ def main():
     tcs_hostname, tcs_port = args.tcs.split(':')
     tcs = TCSInterface(tcs_hostname, int(tcs_port))
     tcs.connect()
+
+    start = time.perf_counter()
 
     while True:
         try:
@@ -102,12 +107,15 @@ def main():
 
             # Write the converted data to the STAMP or stdout
 
-            for entry in tm_data:
-                line = f"{entry[0]}\t{entry[1]}\t0000\t{entry[2]}\n"
-                if stamp:
-                    stamp.write(bytes(line, 'utf-8'))
-                else:
-                    print(line, end='')
+            if time.perf_counter() - start > rate:
+                for entry in sorted(tm_data.values(), key=operator.itemgetter(0)):
+                    line = f"{entry[0]}\t{entry[1]}\t0000\t{entry[2]}\n"
+                    if stamp:
+                        stamp.write(bytes(line, 'utf-8'))
+                    else:
+                        print(line, end='')
+                start = time.perf_counter()
+
         except KeyboardInterrupt:
             break
 
