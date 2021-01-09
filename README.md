@@ -4,6 +4,11 @@ This package converts the telemetry stream from the TCS EGSE to a STAMP specific
 
 The TCS EGSE is a thermal control equipment that will be used to control the temperature of the PLATO Camera during ground testing.
 
+## Install
+
+    $ python3 -m pip install tcs-stamp-converter
+
+
 ## How to use
 
     $ python -m tcsstamp -h
@@ -22,3 +27,9 @@ The TCS EGSE is a thermal control equipment that will be used to control the tem
       --rate RATE, -r RATE  The outgoing telemetry rate to STAMP [seconds].
 
     An endpoint shall be specified as 'hostname:port'.
+
+## Glossary
+
+* PLATO: PLAnetary Transits and Oscillations of stars
+* EGSE: Electric Ground Support Equipment
+* STAMP: System for Thermal Analysis, Measurement, and Power supply control
