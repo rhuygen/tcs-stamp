@@ -49,7 +49,7 @@ An example usage in a local network might look like this:
 
     $ tcs_stamp --tcs 10.33.178.10:6666 --stamp 10.33.178.12:4444
 
-You can use the simple echo server which is also installed with the package. This server will echo the received stream of data to stdout. 
+You can use the simple echo server which is also installed with the package. This server will echo the received stream of data to stdout. The echo_server listens to port 4444.
 
     $ echo_server 
     Connected by ('127.0.0.1', 64725)
@@ -70,9 +70,9 @@ When you don't specify the `--stamp` option, the housekeeping will be sent to st
     10.01.2021 12:50:10	fee_rtd_status	0000	00001
     10.01.2021 12:50:10	fee_rtd_tav	0000	0.1733
 
-If you like to see the housekeeping in a proper table, you can use the `--rich` option. That will print out a table like below instead of the output above. 
+If you like to see the housekeeping in a proper table, you can use the `--rich` option. That will print out a table like below instead of the output above. Please note that the 'rich' module must be pip installed for this to work.
 
-![](https://github.com/rhuygen/tcsstamp/blob/main/img/screenshot-all-telemetry.png)
+![Table of All Telemetry](https://github.com/rhuygen/tcsstamp/blob/main/img/screenshot-all-telemetry.png)
 
 The STAMP interface expects the timestamp, sensor name, sensor number, and value to be separated with a TAB character and each entry ended with a newline. That is what you see in the above example, only the hk number is ignored by STAMP and therefore left 0000 for all hk entries.     
 
@@ -86,7 +86,9 @@ The timestamp is given in the format `'DD.MM.YYYY HH.MM.SS'`, with optionally a 
     10.01.2021 13:01:07.836	ch2_pid_sp	0000	0.0000
     10.01.2021 13:01:07.836	ch2_pid_ts	0000	12.5000
 
-Telemetry is sent out by the TCS EGSE at 1Hz and only values that have changed are transmitted. We want to send a consistent set of housekeeping values to STAMP and therefore transmit all sensor values that we 
+Telemetry is sent out by the TCS EGSE at 1Hz and only values that have changed are transmitted. When you need a lower telemetry rate, use the `--rate` option which basically defines the number of seconds to wait before sending the next batch of housekeeping. The following command will send housekeeping out every 10 seconds.
+
+    $ tcs_stamp --tcs 10.33.178.10:6666 --rate 10 
 
 ## Glossary
 

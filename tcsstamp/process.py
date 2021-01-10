@@ -1,9 +1,8 @@
 """Process Telemetry data."""
 import datetime
 import logging
-import operator
 import re
-from typing import List, Dict
+from typing import Dict, List
 
 logger = logging.getLogger()
 
@@ -18,8 +17,9 @@ def process_telemetry(data: str) -> Dict:
         data (str): a string containing the telemetry from the TCS EGSE.
 
     Returns:
-        A nested list where the inner lists contain the name, timestamp and value of a housekeeping
-        parameter.
+        A dictionary where the key is the housekeeping parameter name and the value is a list
+        containing the timestamp, name, and value of the housekeeping parameter. Only the last
+        sample in kept in the dictionary.
     """
     global housekeeping
 
@@ -30,6 +30,10 @@ def process_telemetry(data: str) -> Dict:
         return housekeeping
     data = data[0].split('\r\n')
     data = [x.split('\t') for x in data]
+
+    # We do not need to sort by timestamp since the data is already sorted by time.
+    # The
+    # data = sorted(data, key=operator.itemgetter(0))  # sort by date
 
     for x in data:
         date = convert_date(x[0])
@@ -53,8 +57,21 @@ def convert_date(date: str):
     global time_fraction
 
     dt = datetime.datetime.strptime(date, "%Y/%m/%d %H:%M:%S.%f UTC")
-    return dt.strftime("%d.%m.%Y %H:%M:%S.%f")[:-3] if time_fraction \
-        else dt.strftime("%d.%m.%Y %H:%M:%S")
+    if time_fraction:
+        return dt.strftime("%d.%m.%Y %H:%M:%S.%f")[:-3]
+    else:
+        return dt.strftime("%d.%m.%Y %H:%M:%S")
+
+
+def timestamp_key(items: List) -> float:
+    """
+    Return a timestamp of the first element in the list.
+    The can be used as a key in the sorted function.
+    """
+    date = items[0]
+    fmt = "%d.%m.%Y %H:%M:%S" if len(date) < 20 else "%d.%m.%Y %H:%M:%S.%f"
+    dt = datetime.datetime.strptime(date, fmt)
+    return dt.timestamp()
 
 
 time_fraction = False

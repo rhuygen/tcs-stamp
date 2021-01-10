@@ -62,16 +62,18 @@ class UploadCommand(Command):
         os.system(f"{sys.executable} setup.py sdist bdist_wheel --universal")
 
         self.status('Uploading the package to PyPI via Twine…')
-        os.system('twine upload dist/*')
+        os.system('twine upload --repository-url https://test.pypi.org/legacy/ dist/*')
+        # os.system('twine upload dist/*')
 
-        self.status('Pushing git tags…')
-        os.system(f"git tag v{VERSION}")
-        os.system('git push --tags')
+        #self.status('Pushing git tags…')
+        #os.system(f"git tag v{VERSION}")
+        #os.system('git push --tags')
 
         sys.exit()
 
 
 # This call to setup() does all the work
+
 setup(
     name=NAME,
     version=VERSION,
@@ -90,11 +92,13 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     packages=["tcsstamp"],
-    include_package_data=True,
-    install_requires=[],
+    extras_require={
+        "fancy output": ["rich"]
+    },
     entry_points={
         "console_scripts": [
             "tcs_stamp=tcsstamp.__main__:main",
+            "echo_server=tcsstamp.echo_server:main",
         ]
     },
     # $ setup.py publish support.

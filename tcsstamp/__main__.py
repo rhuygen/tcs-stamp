@@ -14,8 +14,7 @@ import time
 
 import tcsstamp
 import tcsstamp.process
-
-from tcsstamp import STAMPInterface, TCSInterface
+from tcsstamp import STAMPInterface, TCSInterface, print_table
 
 
 def parse_arguments():
@@ -57,8 +56,13 @@ def parse_arguments():
         help="The timestamp sent to STAMP must contain 3 fractional digits.",
     )
     parser.add_argument(
+        "--rich",
+        action='store_true',
+        help="Use the 'rich' module to pretty print a table for the Housekeeping values.",
+    )
+    parser.add_argument(
         "--rate", "-r",
-        type=int, default=1,
+        type=int, default=0,
         help="The outgoing telemetry rate to STAMP [seconds].",
     )
     parser.version = f"version {tcsstamp.__version__}"
@@ -79,6 +83,7 @@ def main():
     tcsstamp.process.time_fraction = args.fractional_time
     verbose = args.verbose
     rate = args.rate
+    rich = args.rich
 
     if args.stamp:
         stamp_hostname, stamp_port = args.stamp.split(':')
@@ -108,12 +113,16 @@ def main():
             # Write the converted data to the STAMP or stdout
 
             if time.perf_counter() - start > rate:
-                for entry in sorted(tm_data.values(), key=operator.itemgetter(0)):
+                sorted_tm_data = sorted(tm_data.values(), key=tcsstamp.process.timestamp_key)
+                for entry in sorted_tm_data:
                     line = f"{entry[0]}\t{entry[1]}\t0000\t{entry[2]}\n"
                     if stamp:
                         stamp.write(bytes(line, 'utf-8'))
-                    else:
+                    elif not rich:
                         print(line, end='')
+                if not stamp and rich:
+                    print_table(sorted_tm_data)
+                tcsstamp.process.housekeeping.clear()
                 start = time.perf_counter()
 
         except KeyboardInterrupt:
