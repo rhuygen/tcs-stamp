@@ -96,6 +96,18 @@ Telemetry is sent out by the TCS EGSE at 1Hz and only values that have changed a
 
     $ tcs_stamp --tcs 10.33.178.10:6666 --rate 10 
 
+## Errors
+
+You can expect the following error when:
+
+**BrokenPipeError: [Errno 32] Broken pipe**: When the connection to STAMP or the `echo_server` was terminated at their side.
+
+**ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host** This is the same as a BrokenPipeError, but on Windows.
+
+**ConnectionError: STAMP: Connection refused to localhost:25001.**: When no application is listening on the other side, e.g. STAMP or `echo_server` not started? This could also be the case for TCS EGSE in which case you should check if the TCS EGSE is switched on.
+
+**TimeoutError: STAMP: socket timeout error for 10.33.178.12:25001**: This usually happens when the IP address is wrong or unreachable. Check if you can `ping` to that IP address.
+
 ## Glossary
 
 * PLATO: PLAnetary Transits and Oscillations of stars
