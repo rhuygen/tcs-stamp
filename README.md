@@ -34,6 +34,12 @@ If you need to install a new version of the package:
     
     An endpoint shall be specified as 'hostname:port'.
 
+NOTE: When running the script on Windows, the script might not be found because e.g. the PATH is not pointing to the installation. In that case, you can run the script as follows:
+
+    python -m tcsstamp -h
+
+Notice there is no underscore in the name if called like this.
+
 ## Description
 
 The script is a bridge between the TCS EGSE, which provides the telemetry as a stream of housekeeping values 
