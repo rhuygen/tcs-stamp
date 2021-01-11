@@ -37,7 +37,7 @@ if VERSION is None:
 class UploadCommand(Command):
     """Support setup.py upload."""
 
-    description = 'Build and publish the package.'
+    description = 'Build and publish the package to PyPI.'
     user_options = []
 
     @staticmethod
@@ -62,12 +62,44 @@ class UploadCommand(Command):
         os.system(f"{sys.executable} setup.py sdist bdist_wheel --universal")
 
         self.status('Uploading the package to PyPI via Twine…')
-        # os.system('twine upload --repository-url https://test.pypi.org/legacy/ dist/*')
         os.system('twine upload dist/*')
 
         self.status('Pushing git tags…')
         os.system(f"git tag v{VERSION}")
         os.system('git push --tags')
+
+        sys.exit()
+
+
+class UploadTestCommand(Command):
+    """Support setup.py upload-test."""
+
+    description = 'Build and publish the package to Test PyPI.'
+    user_options = []
+
+    @staticmethod
+    def status(s):
+        """Prints things in bold."""
+        print('\033[1m{0}\033[0m'.format(s))
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        try:
+            self.status('Removing previous builds…')
+            rmtree(os.path.join(HERE, 'dist'))
+        except OSError:
+            pass
+
+        self.status("Building Source and Wheel (universal) distribution…")
+        os.system(f"{sys.executable} setup.py sdist bdist_wheel --universal")
+
+        self.status('Uploading the package to PyPI via Twine…')
+        os.system('twine upload --repository-url https://test.pypi.org/legacy/ dist/*')
 
         sys.exit()
 
@@ -104,5 +136,6 @@ setup(
     # $ setup.py publish support.
     cmdclass={
         'upload': UploadCommand,
+        'upload_test': UploadTestCommand,
     },
 )
