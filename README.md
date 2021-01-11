@@ -34,11 +34,11 @@ If you need to install a new version of the package:
     
     An endpoint shall be specified as 'hostname:port'.
 
-NOTE: When running the script on Windows, the script might not be found because e.g. the PATH is not pointing to the installation. In that case, you can run the script as follows:
+NOTE: When running the script on Windows, the script might not be found because e.g. the PATH is not pointing to the installation. You will get an error saying: _'tcs_stamp' is not recognized as an internal or external command, operable program or batch file._ In that case, fix the PATH to find the script or you can run the script as follows:
 
     python -m tcsstamp -h
 
-Notice there is no underscore in the name if called like this.
+**Notice there is no underscore in the _tcsstamp_ name if called like this.**
 
 ## Description
 
