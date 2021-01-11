@@ -10,7 +10,7 @@ from setuptools import setup, Command
 
 NAME = "tcs-stamp-converter"
 PACKAGE_NAME = "tcsstamp"
-DESCRIPTION = "Convert the telemetry stream from the TCS egse into a STAMP compatible interface."
+DESCRIPTION = "Convert the telemetry stream from the TCS EGSE into a STAMP compatible interface."
 URL = "https://github.com/rhuygen/tcsstamp"
 EMAIL = "rik.huygen@kuleuven.be"
 AUTHOR = "Rik Huygen"
