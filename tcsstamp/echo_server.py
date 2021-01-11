@@ -1,3 +1,4 @@
+import argparse
 import logging
 import socket
 
@@ -37,13 +38,39 @@ def read(conn) -> str:
     return response.decode(encoding='ISO-8859–1')
 
 
+def parse_arguments():
+    """
+    Prepare the arguments that are specific for this application.
+    """
+
+    parser = argparse.ArgumentParser(
+        prog="echo_server",
+        description="Listen on the given port [default=4444] and echo stream to stdout.",
+    )
+    parser.add_argument(
+        "--port", "-p",
+        type=int,
+        default=PORT,
+        help="The TCP port to listen for incoming connections.",
+    )
+
+    arguments = parser.parse_args()
+    return arguments
+
+
 def main():
+
+    args = parse_arguments()
+    port = args.port
+
+    print(f"Listening on {HOST}:{port}")
+
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind((HOST, PORT))
+        s.bind((HOST, port))
         s.listen()
         conn, addr = s.accept()
         with conn:
-            print('Connected by', addr)
+            print('Accepted connection from', addr)
             try:
                 while True:
                     data = read(conn)
