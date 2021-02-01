@@ -1,11 +1,7 @@
 """
 """
-import datetime
 import logging
-import operator
-import re
 import socket
-from typing import List
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("TCS-STAMP")
@@ -157,5 +153,3 @@ class TCSInterface(SocketInterface):
         logger.debug(f"Total number of bytes received is {n_total}, idx={idx}")
 
         return response.decode(encoding='ISO-8859–1')
-
-
