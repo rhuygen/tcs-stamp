@@ -108,6 +108,8 @@ You can expect the following error when:
 
 **TimeoutError: STAMP: socket timeout error for 10.33.178.12:25001**: This usually happens when the IP address is wrong or unreachable. Check if you can `ping` to that IP address.
 
+**WARNING:root:Format error: no new housekeeping values received.**: You might get a lot of these warnings when you have set a password for the MMI user, but didn't log into the device. This occurs even if you have logged in using a Remote Desktop client.
+
 ## Glossary
 
 * PLATO: PLAnetary Transits and Oscillations of stars
