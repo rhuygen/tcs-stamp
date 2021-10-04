@@ -63,6 +63,10 @@ def convert_date(date: str):
         return dt.strftime("%d.%m.%Y %H:%M:%S")
 
 
+def name_key(items: List):
+    return items[1]
+
+
 def timestamp_key(items: List) -> float:
     """
     Return a timestamp of the first element in the list.
