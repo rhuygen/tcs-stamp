@@ -31,7 +31,9 @@ If you need to install a new version of the package:
                             The timestamp sent to STAMP must contain 3 fractional digits.
       --rich                Use the 'rich' module to pretty print a table for the Housekeeping values.
       --rate RATE, -r RATE  The outgoing telemetry rate to STAMP [seconds].
-    
+      --clear, --no-clear   Clear the housekeeping history on each new read.
+      --sort-by-name        Sort the HK table by name instead of time.
+        
     An endpoint shall be specified as 'hostname:port'.
 
 NOTE: When running the script on Windows, the script might not be found because e.g. the PATH is not pointing to the installation. You will get an error saying: _'tcs_stamp' is not recognized as an internal or external command, operable program or batch file._ In that case, fix the PATH to find the script or you can run the script as follows:
@@ -76,7 +78,7 @@ When you don't specify the `--stamp` option, the housekeeping will be sent to st
     10.01.2021 12:50:10	fee_rtd_status	0000	00001
     10.01.2021 12:50:10	fee_rtd_tav	0000	0.1733
 
-If you like to see the housekeeping in a proper table, you can use the `--rich` option. That will print out a table like below instead of the output above. Please note that the 'rich' module must be pip installed for this to work.
+If you like to see the housekeeping in a proper table, you can use the `--rich` option. That will print out a table like below instead of the output above. The list is sorted by timestamp unless you specified the `--sort-by-name` optional argument. Please note that the 'rich' module must be pip installed for this to work.
 
 ![Table of All Telemetry](https://github.com/rhuygen/tcsstamp/blob/main/img/screenshot-all-telemetry.png)
 
@@ -95,6 +97,8 @@ The timestamp is given in the format `'DD.MM.YYYY HH.MM.SS'`, with optionally a 
 Telemetry is sent out by the TCS EGSE at 1Hz and only values that have changed are transmitted. When you need a lower telemetry rate, use the `--rate` option which basically defines the number of seconds to wait before sending the next batch of housekeeping. The following command will send housekeeping out every 10 seconds.
 
     $ tcs_stamp --tcs 10.33.178.10:6666 --rate 10 
+               
+By default, the HK history is cleared at each new batch of housekeeping values. If you don't want that and need to retain the HK values that were not updated, use the `--no-clear` option. 
 
 ## Errors
 
