@@ -17,6 +17,14 @@ import tcsstamp.process
 from tcsstamp import STAMPInterface, TCSInterface, print_table
 
 
+class BooleanAction(argparse.Action):
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        super(BooleanAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, not option_string.startswith('--no'))
+
+
 def parse_arguments():
     """
     Prepare the arguments that are specific for this application.
@@ -65,6 +73,16 @@ def parse_arguments():
         type=int, default=0,
         help="The outgoing telemetry rate to STAMP [seconds].",
     )
+    parser.add_argument(
+        "--clear", "--no-clear", dest='clear',
+        type=bool, action=BooleanAction, default=True,
+        help="Clear the housekeeping history on each new read.",
+    )
+    parser.add_argument(
+        "--sort-by-name", dest='sort_by_name',
+        action="store_true",
+        help="Sort the HK table by name instead of time.",
+    )
     parser.version = f"version {tcsstamp.__version__}"
     arguments = parser.parse_args()
     return arguments, parser
@@ -98,6 +116,11 @@ def main():
 
     start = time.perf_counter()
 
+    if args.sort_by_name:
+        sort_key = tcsstamp.process.name_key
+    else:
+        sort_key = tcsstamp.process.timestamp_key
+
     while True:
         try:
             # Read the Telemetry from the TCS EGSE
@@ -113,7 +136,7 @@ def main():
             # Write the converted data to the STAMP or stdout
 
             if time.perf_counter() - start > rate:
-                sorted_tm_data = sorted(tm_data.values(), key=tcsstamp.process.timestamp_key)
+                sorted_tm_data = sorted(tm_data.values(), key=sort_key)
                 for entry in sorted_tm_data:
                     line = f"{entry[0]}\t{entry[1]}\t0000\t{entry[2]}\n"
                     if stamp:
@@ -122,7 +145,8 @@ def main():
                         print(line, end='')
                 if not stamp and rich:
                     print_table(sorted_tm_data)
-                tcsstamp.process.housekeeping.clear()
+                if args.clear:
+                    tcsstamp.process.housekeeping.clear()
                 start = time.perf_counter()
 
         except KeyboardInterrupt:
